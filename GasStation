@@ -1,0 +1,85 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+/**
+ * Simulator for a Small Gas Station Store
+ */
+
+public class GasStation {
+
+    public static void main (String[] args)
+    {
+        Probability arr;
+        int serveTime = (int)(Math.random()*(6 - 2))+2;  //generate random time between 2-5 minutes
+        double  Arrival = Probability.getProbability();
+      //  double Arrival = ARRIVALPROB;
+
+        final int TOTALTIME = 90;
+
+        gasStationSimulate(serveTime, Arrival, TOTALTIME);
+    }
+
+
+    /**
+     * Simulate Gas Station Store for 90 minutes
+     * @param serveTime
+     *  the number of seconds required to ring up a customer
+     * @param arrivalProb
+     *  the probability that a customer will arrive the store
+     * @param totalTime
+     *  how long the simulation lasts
+     *
+     * @exception  IllegalArgumentException
+     *  Indicates an argument has violated a condition
+     */
+    public static void gasStationSimulate(int serveTime, double arrivalProb, int totalTime)
+    {
+        Queue<Integer> arrivalTimes = new LinkedList<Integer>();
+        int next;
+      // double arrival = new Probability();
+    //   arrivalProb = Probability.getProbability();
+        Cashier cashier1 = new Cashier(serveTime);
+        Averager waitTimes = new Averager();
+        int currentMin;
+
+
+
+        //Write parameters to System.out
+        System.out.println("Minutes to help one customer: " + serveTime);
+        System.out.println("Probability of customer arrival during a minute: " + arrivalProb);
+        System.out.println("Total Simulation minutes: "+ totalTime);
+
+        //precondition
+        if(serveTime<2 || serveTime>5 || arrivalProb<0 || arrivalProb>9 || totalTime < 0)
+        {
+            throw new IllegalArgumentException("Values out of range!");
+        }
+
+        for (currentMin = 0; currentMin < totalTime; currentMin++)
+        {   //Simulate time in seconds
+            //arrivalTimes = Probability.getProbability()
+
+            //check whether there is a customer
+            for (int i = 0; i <= arrivalProb; i++)
+            {
+                arrivalTimes.add(currentMin);
+            }
+
+            //check availability of the cashier
+            if ((!cashier1.isBusy()) && (!arrivalTimes.isEmpty()))   //if cashier is not busy & there is customers
+            {
+                next = arrivalTimes.remove();
+                waitTimes.addNumber(currentMin - next);
+                cashier1.startCashiering();
+
+            }
+            // Subtract one second from the remaining time in the current customer serving
+            cashier1.reduceRemaingTime();
+        }
+
+        //print out summary information about the simulation
+        System.out.println("Customers served:  " + waitTimes.howManyNumbers());
+        if (waitTimes.howManyNumbers() > 0)
+            System.out.println("Average wait: " +  waitTimes.average() + "sec");
+    }
+}
